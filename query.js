@@ -33,22 +33,7 @@ function main(params) {
                 console.log(err);
                 reject();
             } else {
-                var message = JSON.parse(body);
-                var transformed_result = [];
-                for (var i = 0; i < message.length; i++) {
-                    payload = "问题 " + i + ":" + ' Question: ' + message[i]["title"] + '  , (ID: ' + message[i]["_id"] + ')' + ', 回答人数: ' + message[i]["answers"];
-                    data = {
-                        "": payload,
-                    };
-                    transformed_result.push(data);
-                }
-                ads = {
-                    "title": "快来回答你感兴趣的问题，赢取积分，抽得大奖!",
-                    "link": resturl,
-                    "guide": "http://example.com"
-                }
-
-                transformed_result.push(ads);
+                var transformed_result = transform(body,resturl);
                 var slackbody = {
                     channel: params.slackchannel,
                     username: params.slackusername || 'Simple Message Bot',
@@ -72,4 +57,29 @@ function main(params) {
             }
         });
     });
+}
+
+/**
+ * transform the content as the expected format.
+ * @param content
+ * @returns {Array}
+ */
+function transform(content, resturl) {
+    var message = JSON.parse(content);
+    var transformed_result = [];
+    for (var i = 0; i < message.length; i++) {
+        payload = "问题 " + i + ":" + ' Question: ' + message[i]["title"] + '  , (ID: ' + message[i]["_id"] + ')' + ', 回答人数: ' + message[i]["answers"];
+        data = {
+            "": payload,
+        };
+        transformed_result.push(data);
+    }
+    ads = {
+        "title": "快来回答你感兴趣的问题，赢取积分，抽得大奖!",
+        "link": resturl,
+        "guide": "http://example.com"
+    }
+
+    transformed_result.push(ads);
+    return transformed_result;
 }
