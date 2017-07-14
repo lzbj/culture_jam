@@ -18,8 +18,7 @@ var request = require('request');
  * @returns {Promise}
  */
 function main(params) {
-    var username = params.apiusername;
-    var password = params.apipassword;
+    var resturl = params.resturl;
     return new Promise(function (resolve, reject) {
         request({
             method: 'GET',
@@ -34,10 +33,26 @@ function main(params) {
                 console.log(err);
                 reject();
             } else {
+                var message = JSON.parse(body);
+                var transformed_result = [];
+                for (var i = 0; i < message.length; i++) {
+                    payload = "问题 " + i + ":" + ' Question: ' + message[i]["title"] + '  , (ID: ' + message[i]["_id"] + ')' + ', 回答人数: ' + message[i]["answers"];
+                    data = {
+                        "": payload,
+                    };
+                    transformed_result.push(data);
+                }
+                ads = {
+                    "title": "快来回答你感兴趣的问题，赢取积分，抽得大奖!",
+                    "link": resturl,
+                    "guide": "http://example.com"
+                }
+
+                transformed_result.push(ads);
                 var slackbody = {
                     channel: params.slackchannel,
                     username: params.slackusername || 'Simple Message Bot',
-                    text: body
+                    text: "" + JSON.stringify(transformed_result, null, 2)
                 };
                 slackbody = {
                     payload: JSON.stringify(slackbody)
