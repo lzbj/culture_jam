@@ -98,11 +98,11 @@ function transform_text(content, resturl) {
         var payload = "问题 " + i + ":" + ' Question: ' + message[i]["title"] + '(ID: ' + message[i]["_id"] + ')' + ', 回答人数: ' + message[i]["answers"];
 
         transformed_result += payload;
-        transformed_result +='\n';
+        transformed_result += '\n';
     }
     transformed_result += "快来回答你感兴趣的问题，赢取积分，抽得大奖!\n";
     transformed_result += resturl;
-    transformed_result +='\n';
+    transformed_result += '\n';
     transformed_result += "http://example.com\n";
     return transformed_result;
 }
