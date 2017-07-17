@@ -33,11 +33,11 @@ function main(params) {
                 console.log(err);
                 reject();
             } else {
-                var transformed_result = transform(body,resturl);
+                var transformed_result = transform_text(body, resturl);
                 var slackbody = {
                     channel: params.slackchannel,
                     username: params.slackusername || 'Simple Message Bot',
-                    text: "" + JSON.stringify(transformed_result, null, 2)
+                    text: transformed_result
                 };
                 slackbody = {
                     payload: JSON.stringify(slackbody)
@@ -81,5 +81,28 @@ function transform(content, resturl) {
     }
 
     transformed_result.push(ads);
+    return transformed_result;
+}
+
+
+/**
+ * transform the content as the expected format string.
+ * @param content
+ * @param resturl
+ * @returns string
+ */
+function transform_text(content, resturl) {
+    var message = JSON.parse(content);
+    var transformed_result = "";
+    for (var i = 0; i < message.length; i++) {
+        var payload = "问题 " + i + ":" + ' Question: ' + message[i]["title"] + '(ID: ' + message[i]["_id"] + ')' + ', 回答人数: ' + message[i]["answers"];
+
+        transformed_result += payload;
+        transformed_result +='\n';
+    }
+    transformed_result += "快来回答你感兴趣的问题，赢取积分，抽得大奖!\n";
+    transformed_result += resturl;
+    transformed_result +='\n';
+    transformed_result += "http://example.com\n";
     return transformed_result;
 }
