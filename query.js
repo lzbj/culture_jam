@@ -18,6 +18,10 @@ var request = require('request');
  * @returns {Promise}
  */
 function main(params) {
+    var errMsg = checkParams(params);
+    if (errMsg) {
+        return {error: errMsg};
+    }
     var resturl = params.resturl;
     return new Promise(function (resolve, reject) {
         request({
@@ -79,7 +83,7 @@ function transform_wrapper(content, resturl) {
             result = transform_invitation(content, resturl);
             break;
         default:
-            result = "Unexpected resturl was found";
+            result = "Unexpected rest api url was found";
     }
     return result;
 }
@@ -121,7 +125,7 @@ function transform_question(content, resturl) {
     var message = JSON.parse(content);
     var transformed_result = "";
     for (var i = 0; i < message.length; i++) {
-        var payload = "问题 " + i + ":" + ' Question: ' + message[i]["title"] + '(ID: ' + message[i]["_id"] + ')' + ', 回答人数: ' + message[i]["answers"];
+        var payload = "问题 " + (i+1) + ":" + ' Question: ' + message[i]["title"] + ', 回答人数: ' + message[i]["answers"];
 
         transformed_result += payload;
         transformed_result += '\n';
@@ -177,4 +181,22 @@ function transform_invitation(content, resturl) {
     transformed_result += '\n';
     transformed_result += "http://example.com\n";
     return transformed_result;
+}
+
+/**
+ * check if required params are set.
+ * @param params
+ */
+function checkParams(params) {
+    if (params.resturl === undefined && params.slackhook === undefined) {
+        return 'No resturl and slackhook provided';
+    }
+    else if (params.apiusername === undefined && params.apipassword === undefined) {
+        return 'No rest api username and rest api password provided';
+    } else if (params.slackchannel === undefined) {
+        return 'No channel provided';
+    } else {
+        return undefined;
+    }
+
 }
