@@ -10,7 +10,7 @@ Repo hosts code for culture jam.
  
 ## Invoke the slack post action.
 
-`wsk action invoke slackquery --param resturl "$restapiurl"  --param apiusername "$apiusername" --param apipassword "$apipassword" --param slackhook "$slackhookurl"  --param slackusername  "$slackuser" --param slackchannel "#slackchannel" --blocking --result -d -v`
+`wsk action invoke slackquery --param resturl "$restapiurl"  --param apiusername "$apiusername" --param apipassword "$apipassword" --param slackhook "$slackhook"  --param slackusername  "$slackuser" --param slackchannel "#slackchannel" --blocking --result -d -v`
 
 ## Utilize the alarms package.
 
@@ -40,11 +40,13 @@ You can disable the rule.
 ## Use the deploy shell
 
 Copy template.local.env to local.env with following command.
+
 `cp template.local.env  local.env`
 
 Inside the local.env, update the corresponding variable values.
 
 Then run the deploy script
+
 `sh deploy.sh`
 
 The shell will create an action named slackquery, and create a trigger named periodic. then
