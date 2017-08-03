@@ -68,13 +68,17 @@ function main(params) {
  * the resturl
  */
 function transform_wrapper(content, resturl) {
-    var question_pattern = /question/gi;
+    var question_top_pattern = /questions\/hot/gi;
+	var question_new_pattern = /questions\/new/gi;
     var score_pattern = /score/gi;
     var invitation_pattern = /invitation/gi;
     var result;
     switch (true) {
-        case question_pattern.test(resturl):
+        case question_top_pattern.test(resturl):
             result = transform_question(content, resturl);
+            break;
+		case question_new_pattern.test(resturl):
+            result = transform(content, resturl);
             break;
         case score_pattern.test(resturl):
             result = transform_score(content, resturl);
@@ -95,22 +99,18 @@ function transform_wrapper(content, resturl) {
  * @returns {Array}
  */
 function transform(content, resturl) {
-    var message = JSON.parse(content);
-    var transformed_result = [];
+	var message = JSON.parse(content);
+    var transformed_result = "\n";
+	
+	transformed_result += "```最新十大问题： \n";
     for (var i = 0; i < message.length; i++) {
-        payload = "问题 " + i + ":" + ' Question: ' + message[i]["title"] + '  , (ID: ' + message[i]["_id"] + ')' + ', 回答人数: ' + message[i]["answers"];
-        data = {
-            "": payload,
-        };
-        transformed_result.push(data);
+        var payload = (i+1) + ". " + message[i]["title"] + ' (answers:' + message[i]["answers"] + ")";
+        transformed_result += payload;
+        transformed_result += '\n';
     }
-    ads = {
-        "title": "快来回答你感兴趣的问题，赢取积分，抽得大奖!",
-        "link": resturl,
-        "guide": "http://example.com"
-    }
-
-    transformed_result.push(ads);
+    transformed_result += "快来回答你感兴趣的问题，赢取积分，抽得大奖!\n";
+    transformed_result += "快速玩转指南：http://ibmurl.hursley.ibm.com/O4Q7\n";
+	transformed_result += "5分钟玩转OpenWhisk：http://ibmurl.hursley.ibm.com/O4QB```\n\n";
     return transformed_result;
 }
 
@@ -123,17 +123,17 @@ function transform(content, resturl) {
  */
 function transform_question(content, resturl) {
     var message = JSON.parse(content);
-    var transformed_result = "";
+    var transformed_result = "\n";
+	
+	transformed_result += "```最热门十大问题： \n";
     for (var i = 0; i < message.length; i++) {
-        var payload = "问题 " + (i+1) + ":" + ' Question: ' + message[i]["title"] + ', 回答人数: ' + message[i]["answers"];
-
+        var payload = (i+1) + ". " + message[i]["title"] + ' (answers:' + message[i]["answers"] + ")";
         transformed_result += payload;
         transformed_result += '\n';
     }
     transformed_result += "快来回答你感兴趣的问题，赢取积分，抽得大奖!\n";
-    transformed_result += resturl;
-    transformed_result += '\n';
-    transformed_result += "http://example.com\n";
+    transformed_result += "快速玩转指南：http://ibmurl.hursley.ibm.com/O4Q7\n";
+	transformed_result += "5分钟玩转OpenWhisk：http://ibmurl.hursley.ibm.com/O4QB```\n\n";
     return transformed_result;
 }
 
@@ -146,17 +146,16 @@ function transform_question(content, resturl) {
  */
 function transform_score(content, resturl) {
     var message = JSON.parse(content);
-    var transformed_result = "";
+    var transformed_result = "```积分前十名: \n";
     for (var i = 0; i < message.length; i++) {
-        var payload = 'cnName: ' + message[i]["cnName"] + ', enName: ' + message[i]["enName"] + ', intranetID: ' + message[i]["intranetID"] + ', score: ' + message[i]["score"];
+        var payload = (i+1) + ". " + message[i]["cnName"] + ': ' + message[i]["score"];
 
         transformed_result += payload;
         transformed_result += '\n';
     }
     transformed_result += "快来回答你感兴趣的问题，赢取积分，抽得大奖!\n";
-    transformed_result += resturl;
-    transformed_result += '\n';
-    transformed_result += "http://example.com\n";
+    transformed_result += "快速玩转指南：http://ibmurl.hursley.ibm.com/O4Q7\n";
+	transformed_result += "5分钟玩转OpenWhisk：http://ibmurl.hursley.ibm.com/O4QB```\n\n";
     return transformed_result;
 }
 
@@ -169,17 +168,17 @@ function transform_score(content, resturl) {
  */
 function transform_invitation(content, resturl) {
     var message = JSON.parse(content);
-    var transformed_result = "";
+    var transformed_result = "```今天邀请好友最多： \n";
     for (var i = 0; i < message.length; i++) {
-        var payload = 'intranetID: ' + message[i]["intranetID"] + ', invitations: ' + message[i]["invitations"];
+        var payload = (i + 1) + ". " + message[i]["intranetId"] + '，邀请' + message[i]["invitations"] + "位好友";
 
         transformed_result += payload;
         transformed_result += '\n';
     }
+	
     transformed_result += "快来回答你感兴趣的问题，赢取积分，抽得大奖!\n";
-    transformed_result += resturl;
-    transformed_result += '\n';
-    transformed_result += "http://example.com\n";
+    transformed_result += "快速玩转指南：http://ibmurl.hursley.ibm.com/O4Q7\n";
+	transformed_result += "5分钟玩转OpenWhisk：http://ibmurl.hursley.ibm.com/O4QB```\n\n";
     return transformed_result;
 }
 
